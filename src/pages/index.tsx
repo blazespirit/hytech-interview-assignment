@@ -31,15 +31,49 @@ const ExchangeRate: NextPage = () => {
   ];
 
   const columns: GridColDef<ExchangeRateRow>[] = [
-    { field: "col1", headerName: "Column 1", width: 150, flex: 1 },
-    { field: "col2", headerName: "Column 2", width: 150, flex: 1 },
+    {
+      field: "name",
+      headerName: "Name",
+      headerAlign: "left",
+      align: "left",
+      width: 150,
+      flex: 2,
+      headerClassName: "grey-header",
+    },
+    {
+      field: "type",
+      headerName: "Type",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 60,
+      flex: 1,
+      headerClassName: "grey-header",
+    },
+    {
+      field: "unit",
+      headerName: "Unit",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 60,
+      flex: 1,
+      headerClassName: "grey-header",
+    },
+    {
+      field: "value",
+      headerName: "Value",
+      headerAlign: "right",
+      align: "right",
+      width: 150,
+      flex: 2,
+      headerClassName: "grey-header",
+    },
   ];
 
   return (
     <Stack sx={containerStyle}>
       <AppHeader title="Rates" />
       <Box sx={tableContainerStyle}>
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid rows={rows} columns={columns} autoPageSize />
       </Box>
     </Stack>
   );
@@ -54,6 +88,9 @@ const tableContainerStyle: SxProps = {
   width: "100%",
   flexGrow: 1,
   padding: "20px",
+  "& .grey-header": {
+    backgroundColor: "rgb(238, 238, 238)",
+  },
 };
 
 export default ExchangeRate;
