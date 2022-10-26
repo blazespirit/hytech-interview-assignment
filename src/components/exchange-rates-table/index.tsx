@@ -19,6 +19,8 @@ export const ExchangeRatesTable = () => {
     return data.data.rates;
   }, [data]);
 
+  console.log("isError", isError);
+
   return (
     <Box sx={tableContainerStyle}>
       <DataGrid
@@ -26,6 +28,7 @@ export const ExchangeRatesTable = () => {
         columns={columns}
         autoPageSize
         loading={isLoading}
+        error={error}
       />
     </Box>
   );
