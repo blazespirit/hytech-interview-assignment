@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from "axios";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -16,6 +15,19 @@ export type ExchangeRateRow = {
   value: number;
 };
 
+// response type from coingecko api
+type ApiResponse = {
+  rates: Record<
+    string,
+    {
+      name: string;
+      type: string;
+      unit: string;
+      value: number;
+    }
+  >;
+};
+
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -27,10 +39,22 @@ export default function handler(
     );
 
     axios
-      .get(process.env.RATES_API_URL)
+      .get<ApiResponse>(process.env.RATES_API_URL)
       .then((response) => {
-        console.log("api res", response);
-        res.status(200).json({ rates: [] });
+        let exchangeRates = [];
+
+        // transform response from coingecko api into array type
+        for (const [key, rate] of Object.entries(response.data.rates)) {
+          exchangeRates.push({
+            id: key,
+            name: rate.name,
+            type: rate.type,
+            unit: rate.unit,
+            value: rate.value,
+          });
+        }
+
+        res.status(200).json({ rates: exchangeRates });
       })
       .catch((err) => {
         if (err.response) {
