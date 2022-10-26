@@ -2,6 +2,7 @@ import axios from "axios";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import assert from "assert";
+import { exchangeRateTransform } from "../../api-utils/data-transform";
 
 export type Data = {
   rates: ExchangeRateRow[];
@@ -16,7 +17,7 @@ export type ExchangeRateRow = {
 };
 
 // response type from coingecko api
-type ApiResponse = {
+export type ApiResponse = {
   rates: Record<
     string,
     {
@@ -41,20 +42,9 @@ export default function handler(
     axios
       .get<ApiResponse>(process.env.RATES_API_URL)
       .then((response) => {
-        let exchangeRates = [];
+        const transformedExchangeRate = exchangeRateTransform(response.data);
 
-        // transform response from coingecko api into array type
-        for (const [key, rate] of Object.entries(response.data.rates)) {
-          exchangeRates.push({
-            id: key,
-            name: rate.name,
-            type: rate.type,
-            unit: rate.unit,
-            value: rate.value,
-          });
-        }
-
-        res.status(200).json({ rates: exchangeRates });
+        res.status(200).json({ rates: transformedExchangeRate });
       })
       .catch((err) => {
         if (err.response) {
@@ -68,5 +58,3 @@ export default function handler(
     // log error to reporting tools like LogRocket
   }
 }
-
-// TODO -- add <Flavor> typing
